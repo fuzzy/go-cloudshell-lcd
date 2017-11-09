@@ -51,7 +51,7 @@ func workJiffies()
 
 func CpuUsage() {
 	tj1, wj1 := countJiffies()
-	time.Sleep(time.Second)
+	time.Sleep(50 * time.Millisecond)
 	tj2, wj2 := countJiffies()
 
 	top := (tj2 - tj1)
