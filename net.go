@@ -7,7 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
-
+	"time"
+	
 	"git.thwap.org/rockhopper/gout"
 )
 
@@ -28,6 +29,7 @@ func getTransfer(i string) *NetIf {
 	if er != nil {
 		panic(er)
 	}
+	fp.Close()
 
 	fp, er = os.Open(fmt.Sprintf("/sys/class/net/%s/statistics/tx_bytes", i))
 	if er != nil {
@@ -39,6 +41,7 @@ func getTransfer(i string) *NetIf {
 	if er != nil {
 		panic(er)
 	}
+	fp.Close()
 
 	retv := &NetIf{Name: i, Rx_b: rx, Tx_b: tx}
 	return retv
@@ -62,22 +65,26 @@ func interfaces() map[string]*NetIf {
 				panic(te)
 			}
 			retv[string(v.Name())].Speed = ts
+			tf.Close()
 		}
 	}
 
 	return retv
 }
 
-func NetUsage() {
-	data := interfaces()
-	for k, v := range data {
-		fmt.Printf(
-			"%s: %s %s - %s %s\n",
-			gout.Bold(gout.White(k)),
-			gout.Yellow("rx"),
-			gout.Bold(gout.Green(humanSize(v.Rx_b))),
-			gout.Yellow("tx"),
-			gout.Bold(gout.Green(humanSize(v.Tx_b))),
-		)
+func NetUsage(c chan string) {
+	for {
+		data := interfaces()
+		for k, v := range data {
+			c <-fmt.Sprintf(
+				"%s: %s %s - %s %s\n",
+				gout.Bold(gout.White(k)),
+				gout.Bold(gout.Yellow("🠋")),
+				gout.Bold(gout.Green(humanSize(v.Rx_b))),
+				gout.Bold(gout.Yellow("🠉")),
+				gout.Bold(gout.Green(humanSize(v.Tx_b))),
+			)
+		}
+		time.Sleep(time.Second)
 	}
 }

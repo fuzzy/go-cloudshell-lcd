@@ -17,10 +17,10 @@ func jiffies() []string {
 	if er != nil {
 		panic(er)
 	}
-	defer fp.Close()
 
 	scanner := bufio.NewScanner(fp)
 	scanner.Scan()
+	fp.Close()
 	return strings.Split(scanner.Text(), " ")
 }
 
@@ -49,15 +49,16 @@ func countJiffies() (int64, int64) {
 
 func workJiffies()
 
-func CpuUsage() {
-	tj1, wj1 := countJiffies()
-	time.Sleep(50 * time.Millisecond)
-	tj2, wj2 := countJiffies()
+func CpuUsage(c chan string) {
+	for {
+		tj1, wj1 := countJiffies()
+		time.Sleep(50 * time.Millisecond)
+		tj2, wj2 := countJiffies()
 
-	top := (tj2 - tj1)
-	wop := (wj2 - wj1)
-	cpu := (float64(wop) / float64(top)) * 100.0
+		top := (tj2 - tj1)
+		wop := (wj2 - wj1)
+		cpu := (float64(wop) / float64(top)) * 100.0
 
-	fmt.Printf("%s: %s\n", gout.Bold(gout.White("CPU")), progress(int(cpu)))
-
+		c <-fmt.Sprintf("%s: %s", gout.Bold(gout.White("CPU")), progress(int(cpu)))
+	}
 }
