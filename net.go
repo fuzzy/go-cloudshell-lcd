@@ -5,10 +5,11 @@ import (
 	"bufio"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"strconv"
 	"time"
-	
+
 	"git.thwap.org/rockhopper/gout"
 )
 
@@ -55,7 +56,11 @@ func interfaces() map[string]*NetIf {
 	}
 	for _, v := range f {
 		if string(v.Name()[0]) == "e" {
-			retv[string(v.Name())] = getTransfer(v.Name())
+			retv[string(v.Name())] = &NetIf{Name: v.Name()}
+			point_a := getTransfer(v.Name())
+			time.Sleep(time.Second)
+			point_b := getTransfer(v.Name())
+
 			// now get the interface speed
 			tf, te := os.Open(fmt.Sprintf("/sys/class/net/%s/speed", v.Name()))
 			scanner := bufio.NewScanner(tf)
@@ -65,6 +70,12 @@ func interfaces() map[string]*NetIf {
 				panic(te)
 			}
 			retv[string(v.Name())].Speed = ts
+
+			// now calc the difference between points a and b (speed)
+			retv[string(v.Name())].Rx_b = (point_b.Rx_b - point_a.Rx_b)
+			retv[string(v.Name())].Tx_b = (point_b.Tx_b - point_a.Tx_b)
+
+			// cleanup the filehandle
 			tf.Close()
 		}
 	}
@@ -75,14 +86,22 @@ func interfaces() map[string]*NetIf {
 func NetUsage(c chan string) {
 	for {
 		data := interfaces()
+		var rwp, twp float64
 		for k, v := range data {
-			c <-fmt.Sprintf(
-				"%s: %s %s - %s %s\n",
+			if v.Rx_b > 0 {
+				rwp = 100.0 * (100.0 * ((float64(v.Rx_b) / float64(v.Speed*int64(math.Pow(1024, 3)))) * 100.0))
+			} else {
+				rwp = 0
+			}
+			if v.Tx_b > 0 {
+				twp = 100.0 * (100.0 * ((float64(v.Tx_b) / float64(v.Speed*int64(math.Pow(1024, 3)))) * 100.0))
+			} else {
+				twp = 0
+			}
+			c <- fmt.Sprintf(
+				"%s: %s",
 				gout.Bold(gout.White(k)),
-				gout.Bold(gout.Yellow("🠋")),
-				gout.Bold(gout.Green(humanSize(v.Rx_b))),
-				gout.Bold(gout.Yellow("🠉")),
-				gout.Bold(gout.Green(humanSize(v.Tx_b))),
+				doubleProgress(int(rwp), int(twp), "rx", "tx"),
 			)
 		}
 		time.Sleep(time.Second)

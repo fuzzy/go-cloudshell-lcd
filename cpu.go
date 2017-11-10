@@ -59,6 +59,6 @@ func CpuUsage(c chan string) {
 		wop := (wj2 - wj1)
 		cpu := (float64(wop) / float64(top)) * 100.0
 
-		c <-fmt.Sprintf("%s: %s", gout.Bold(gout.White("CPU")), progress(int(cpu)))
+		c <- fmt.Sprintf("%s:  %s", gout.Bold(gout.White("CPU")), progress(int(cpu)))
 	}
 }
