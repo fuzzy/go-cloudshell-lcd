@@ -94,6 +94,6 @@ outputs:
       space: true
     - name: sdb
       enabled: true
-	    mount: /srv/share
-	    space: true
+      mount: /srv/share
+      space: true
 ```
