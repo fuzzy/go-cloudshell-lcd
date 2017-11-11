@@ -10,11 +10,12 @@ func PrintLine(l int, c chan string) {
 }
 
 func PrintLines(l int, c chan []string) int {
+	row := l
 	for i, v := range <-c {
-		fmt.Printf("\033[%d;1H%s", l, v)
-		l += i
+		fmt.Printf("\033[%d;1H%s", row, v)
+		row += i
 	}
-	return l
+	return row
 }
 
 func main() {
