@@ -39,8 +39,8 @@ func main() {
 		go PrintLine(3, cpu_c)
 		go PrintLine(4, ram_c)
 		go PrintLine(5, swap_c)
-		go PrintLines(6, net_c)
-		go PrintLines(8, disk_c)
+		go PrintLines(7, net_c)
+		go PrintLines(9, disk_c)
 		time.Sleep(2 * time.Second)
 	}
 
