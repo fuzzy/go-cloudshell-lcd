@@ -156,8 +156,8 @@ func DiskProducer() {
 				retv.Lines = append(
 					retv.Lines,
 					fmt.Sprintf(
-						"%s:  %s",
-						gout.Bold(gout.White(v.Name)),
+						"%s: %s",
+						gout.Bold(gout.White("Used")),
 						progress(int(dup)),
 					),
 				)
