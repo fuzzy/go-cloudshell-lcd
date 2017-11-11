@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	//"syscall"
+	"syscall"
 	"time"
 
 	"git.thwap.org/rockhopper/gout"
@@ -45,7 +45,7 @@ func d_isIn(a int, b []int) bool {
 
 func parseDiskStats() []*Disk {
 	retv := []*Disk{}
-	//stat := &syscall.Statfs_t{}
+	stat := &syscall.Statfs_t{}
 
 	fp, er := os.Open("/proc/diskstats")
 	pcheck(er)
@@ -99,7 +99,17 @@ func parseDiskStats() []*Disk {
 				value = 9999
 			}
 		}
-		//syscall.Statfs()
+		// get our filesystem stats
+		for _, tv := range Config.Outputs.Disk {
+			if tv.Name == elem.Name {
+				syscall.Statfs(fmt.Sprintf(tv.Mount), stat)
+				elem.SizeTotal = (stat.Blocks * uint64(stat.Bsize))
+				elem.SizeFree = (stat.Bfree * uint64(stat.Bsize))
+				elem.SizeUsed = (elem.SizeTotal - elem.SizeFree)
+			}
+		}
+
+		// and append our element
 		retv = append(retv, elem)
 	}
 	return retv
@@ -141,6 +151,16 @@ func DiskProducer() {
 					}
 				}
 				retv.Type = v.Name
+				// now get disk used percentage
+				dup := (float64(v.SizeUsed) / float64(v.SizeTotal)) * 100.0
+				retv.Lines = append(
+					retv.Lines,
+					fmt.Sprintf(
+						"%s:  %s",
+						gout.Bold(gout.White(v.Name)),
+						progress(int(dup)),
+					),
+				)
 			}
 		}
 		Output <- retv
