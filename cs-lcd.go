@@ -13,7 +13,7 @@ func PrintLines(l int, c chan []string) int {
 	row := l
 	for i, v := range <-c {
 		fmt.Printf("\033[%d;1H%s", row, v)
-		row += i
+		row += 1
 	}
 	return row
 }
