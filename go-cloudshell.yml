@@ -22,6 +22,6 @@ outputs:
       mount: /srv/share
       space: true
     - name: sdb
-      enabled: false
+      enabled: true
       mount: /
       space: false
