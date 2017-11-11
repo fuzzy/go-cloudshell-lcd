@@ -161,6 +161,7 @@ func DiskProducer() {
 						progress(int(dup)),
 					),
 				)
+				retv.Lines = append(retv.Lines, "")
 			}
 		}
 		Output <- retv
