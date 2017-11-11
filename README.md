@@ -62,3 +62,38 @@ while true; do
 done
 			
 ```
+
+### Configuration
+
+edit /etc/go-cloudshell.yml
+
+```
+
+---
+# Update interval in seconds
+interval: 1
+padding:
+  # Top padding (lines)
+  top: 1
+  # left padding (spaces)
+  left: 0
+# configure outputs
+outputs:
+  host: true
+  load: true
+  cpu: true
+  ram: true
+  swap: true
+  net:
+    - name: eth0
+      enabled: true
+  disk:
+    - name: sda
+      enabled: true
+      mount: /
+      space: true
+    - name: sdb
+      enabled: true
+	    mount: /srv/share
+	    space: true
+```
