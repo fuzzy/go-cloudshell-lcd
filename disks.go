@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	//"syscall"
 	"time"
 
 	"git.thwap.org/rockhopper/gout"
@@ -28,6 +29,9 @@ type Disk struct {
 	CurrentIops     int
 	IoTime          int64
 	WeightedIoTime  int64
+	SizeTotal       uint64
+	SizeFree        uint64
+	SizeUsed        uint64
 }
 
 func d_isIn(a int, b []int) bool {
@@ -41,6 +45,7 @@ func d_isIn(a int, b []int) bool {
 
 func parseDiskStats() []*Disk {
 	retv := []*Disk{}
+	//stat := &syscall.Statfs_t{}
 
 	fp, er := os.Open("/proc/diskstats")
 	pcheck(er)
@@ -94,12 +99,13 @@ func parseDiskStats() []*Disk {
 				value = 9999
 			}
 		}
+		//syscall.Statfs()
 		retv = append(retv, elem)
 	}
 	return retv
 }
 
-func DiskUsage(c chan []string) {
+func DiskProducer() {
 	// get regex pattern ready
 	diskRegex, er := regexp.Compile(`^sd[a-z]$`)
 	pcheck(er)
@@ -108,7 +114,7 @@ func DiskUsage(c chan []string) {
 
 	// no do the things
 	for {
-		retv := []string{}
+		retv := &CloudShellOutput{Lines: []string{}}
 		snap1 := parseDiskStats()
 		time.Sleep(time.Second)
 		snap2 := parseDiskStats()
@@ -124,8 +130,8 @@ func DiskUsage(c chan []string) {
 						rdPc := (float64(rdSt) / float64(max)) * 100.0
 						wrSt := (iv.SectorsWritten - v.SectorsWritten) * 512
 						wrPc := (float64(wrSt) / float64(max)) * 100.0
-						retv = append(
-							retv,
+						retv.Lines = append(
+							retv.Lines,
 							fmt.Sprintf(
 								"%s:  %s",
 								gout.Bold(gout.White(v.Name)),
@@ -134,9 +140,9 @@ func DiskUsage(c chan []string) {
 						)
 					}
 				}
+				retv.Type = v.Name
 			}
 		}
-
-		c <- retv
+		Output <- retv
 	}
 }

@@ -44,14 +44,19 @@ func getSwapTotals() *SwapTotals {
 	return retv
 }
 
-func SwapUsage(c chan string) {
+func SwapProducer() {
 	for {
 		swap := getSwapTotals()
-		c <- fmt.Sprintf(
-			"%s: %s",
-			gout.Bold(gout.White("SWAP")),
-			progress(int((float64(swap.Used)/float64(swap.Total))*100.0)),
-		)
+		Output <- &CloudShellOutput{
+			Type: "swap",
+			Lines: []string{
+				fmt.Sprintf(
+					"%s: %s",
+					gout.Bold(gout.White("SWAP")),
+					progress(int((float64(swap.Used)/float64(swap.Total))*100.0)),
+				),
+			},
+		}
 		time.Sleep(time.Second)
 	}
 }

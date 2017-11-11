@@ -47,18 +47,25 @@ func countJiffies() (int64, int64) {
 	return totj, wrkj
 }
 
-func workJiffies()
-
-func CpuUsage(c chan string) {
+func CpuProducer() {
 	for {
 		tj1, wj1 := countJiffies()
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(time.Second)
 		tj2, wj2 := countJiffies()
 
 		top := (tj2 - tj1)
 		wop := (wj2 - wj1)
 		cpu := (float64(wop) / float64(top)) * 100.0
 
-		c <- fmt.Sprintf("%s:  %s", gout.Bold(gout.White("CPU")), progress(int(cpu)))
+		Output <- &CloudShellOutput{
+			Type: "cpu",
+			Lines: []string{
+				fmt.Sprintf(
+					"%s:  %s",
+					gout.Bold(gout.White("CPU")),
+					progress(int(cpu)),
+				),
+			},
+		}
 	}
 }

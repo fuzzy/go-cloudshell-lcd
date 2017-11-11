@@ -83,9 +83,9 @@ func interfaces() map[string]*NetIf {
 	return retv
 }
 
-func NetUsage(c chan []string) {
+func NetProducer() {
 	for {
-		retv := []string{}
+		retv := &CloudShellOutput{Lines: []string{}}
 		data := interfaces()
 		var rwp, twp float64
 		for k, v := range data {
@@ -99,13 +99,14 @@ func NetUsage(c chan []string) {
 			} else {
 				twp = 0
 			}
-			retv = append(retv, fmt.Sprintf(
+			retv.Type = k
+			retv.Lines = append(retv.Lines, fmt.Sprintf(
 				"%s: %s",
 				gout.Bold(gout.White(k)),
 				doubleProgress(int(rwp), int(twp), "rx", "tx"),
 			))
 		}
-		c <- retv
+		Output <- retv
 		time.Sleep(time.Second)
 	}
 }
