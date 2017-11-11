@@ -1,0 +1,10 @@
+language: go
+
+go:
+  - 1.4.3
+  - 1.5.3
+  - 1.6.3
+  - 1.7.5
+
+script: go test
+
