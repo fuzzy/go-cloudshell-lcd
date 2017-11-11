@@ -63,12 +63,14 @@ func Outputter() {
 				}
 				for i, n := range Config.Outputs.Disk {
 					if n.Name == tmp.Type && n.Enabled {
-						fmt.Printf(
-							"\033[%d;1H%s%s",
-							start+len(Config.outputs)+cnt+i+3,
-							strings.Repeat(" ", Config.Padding.Left),
-							tmp.Lines[0],
-						)
+						for _, tl := range tmp.Lines {
+							fmt.Printf(
+								"\033[%d;1H%s%s",
+								start+len(Config.outputs)+cnt+i+2,
+								strings.Repeat(" ", Config.Padding.Left),
+								tl,
+							)
+						}
 					}
 				}
 			}
