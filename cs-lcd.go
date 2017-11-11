@@ -80,7 +80,7 @@ func Outputter() {
 }
 
 func main() {
-	Config = ReadConfig("./go-cloudshell.yml")
+	Config = ReadConfig("/etc/go-cloudshell.yml")
 	Output = make(chan *CloudShellOutput, 7)
 
 	// Producer startup
