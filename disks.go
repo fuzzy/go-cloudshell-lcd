@@ -151,16 +151,20 @@ func DiskProducer() {
 					}
 				}
 				retv.Type = v.Name
-				// now get disk used percentage
-				dup := (float64(v.SizeUsed) / float64(v.SizeTotal)) * 100.0
-				retv.Lines = append(
-					retv.Lines,
-					fmt.Sprintf(
-						"%s: %s",
-						gout.Bold(gout.White("Used")),
-						progress(int(dup)),
-					),
-				)
+				for _, tv := range Config.Outputs.Disk {
+					if tv.Name == v.Name && tv.Space {
+						// now get disk used percentage
+						dup := (float64(v.SizeUsed) / float64(v.SizeTotal)) * 100.0
+						retv.Lines = append(
+							retv.Lines,
+							fmt.Sprintf(
+								"%s: %s",
+								gout.Bold(gout.White("Used")),
+								progress(int(dup)),
+							),
+						)
+					}
+				}
 				retv.Lines = append(retv.Lines, "")
 			}
 		}
