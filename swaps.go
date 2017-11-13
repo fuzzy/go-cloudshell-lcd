@@ -2,13 +2,10 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-
-	"git.thwap.org/rockhopper/gout"
 )
 
 type SwapTotals struct {
@@ -50,10 +47,9 @@ func SwapProducer() {
 		Output <- &CloudShellOutput{
 			Type: "swap",
 			Lines: []string{
-				fmt.Sprintf(
-					"%s: %s",
-					gout.Bold(gout.White("SWAP")),
-					progress(int((float64(swap.Used)/float64(swap.Total))*100.0)),
+				progress(
+					"Swap",
+					int((float64(swap.Used)/float64(swap.Total))*100.0),
 				),
 			},
 		}

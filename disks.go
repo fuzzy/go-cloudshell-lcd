@@ -10,8 +10,6 @@ import (
 	"strings"
 	"syscall"
 	"time"
-
-	"git.thwap.org/rockhopper/gout"
 )
 
 type Disk struct {
@@ -142,11 +140,7 @@ func DiskProducer() {
 						wrPc := (float64(wrSt) / float64(max)) * 100.0
 						retv.Lines = append(
 							retv.Lines,
-							fmt.Sprintf(
-								"%s:  %s",
-								gout.Bold(gout.White(v.Name)),
-								doubleProgress(int(rdPc), int(wrPc), "rd", "wr"),
-							),
+							doubleProgress(v.Name, int(rdPc), int(wrPc), "rd", "wr"),
 						)
 					}
 				}
@@ -157,11 +151,7 @@ func DiskProducer() {
 						dup := (float64(v.SizeUsed) / float64(v.SizeTotal)) * 100.0
 						retv.Lines = append(
 							retv.Lines,
-							fmt.Sprintf(
-								"%s: %s",
-								gout.Bold(gout.White("Used")),
-								progress(int(dup)),
-							),
+							progress("Used", int(dup)),
 						)
 					}
 				}

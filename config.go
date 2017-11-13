@@ -11,8 +11,10 @@ import (
 type CloudShellConfig struct {
 	Interval int `yaml:"interval"`
 	Padding  struct {
-		Top  int `yaml:"top"`
-		Left int `yaml:"left"`
+		Top    int `yaml:"top"`
+		Left   int `yaml:"left"`
+		Right  int `yaml:"right"`
+		Bottom int `yaml:"bottom"`
 	} `yaml:"padding"`
 	Outputs struct {
 		Host bool `yaml:"host,omitempty"`

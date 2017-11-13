@@ -7,10 +7,7 @@ package main
 import "C"
 
 import (
-	"fmt"
 	"time"
-
-	"git.thwap.org/rockhopper/gout"
 )
 
 func RamProducer() {
@@ -20,14 +17,8 @@ func RamProducer() {
 		usedRam := (maxRam - freeRam)
 		ramPercUsed := (float64(usedRam) / float64(maxRam)) * 100.0
 		Output <- &CloudShellOutput{
-			Type: "ram",
-			Lines: []string{
-				fmt.Sprintf(
-					"%s:  %s",
-					gout.Bold(gout.White("RAM")),
-					progress(int(ramPercUsed)),
-				),
-			},
+			Type:  "ram",
+			Lines: []string{progress("Ram", int(ramPercUsed))},
 		}
 		time.Sleep(time.Second)
 	}

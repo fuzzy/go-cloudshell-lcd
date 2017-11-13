@@ -9,8 +9,6 @@ import (
 	"os"
 	"strconv"
 	"time"
-
-	"git.thwap.org/rockhopper/gout"
 )
 
 type NetIf struct {
@@ -100,11 +98,10 @@ func NetProducer() {
 				twp = 0
 			}
 			retv.Type = k
-			retv.Lines = append(retv.Lines, fmt.Sprintf(
-				"%s: %s",
-				gout.Bold(gout.White(k)),
-				doubleProgress(int(rwp), int(twp), "rx", "tx"),
-			))
+			retv.Lines = append(
+				retv.Lines,
+				doubleProgress(k, int(rwp), int(twp), "rx", "tx"),
+			)
 		}
 		Output <- retv
 		time.Sleep(time.Second)

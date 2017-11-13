@@ -3,13 +3,10 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-
-	"git.thwap.org/rockhopper/gout"
 )
 
 func jiffies() []string {
@@ -58,14 +55,8 @@ func CpuProducer() {
 		cpu := (float64(wop) / float64(top)) * 100.0
 
 		Output <- &CloudShellOutput{
-			Type: "cpu",
-			Lines: []string{
-				fmt.Sprintf(
-					"%s:  %s",
-					gout.Bold(gout.White("CPU")),
-					progress(int(cpu)),
-				),
-			},
+			Type:  "cpu",
+			Lines: []string{progress("Cpu", int(cpu))},
 		}
 	}
 }
