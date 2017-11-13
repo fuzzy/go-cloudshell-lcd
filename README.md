@@ -98,4 +98,6 @@ outputs:
       space: true
 ```
 
+### Screenshot
+
 ![alt text](https://raw.githubusercontent.com/fuzzy/go-cloudshell-lcd/master/go-cloudshell-lcd.png "Screenshot")
