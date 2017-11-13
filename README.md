@@ -97,3 +97,5 @@ outputs:
       mount: /srv/share
       space: true
 ```
+
+![alt text](https://raw.githubusercontent.com/fuzzy/go-cloudshell-lcd/master/go-cloudshell-lcd.png "Screenshot")
